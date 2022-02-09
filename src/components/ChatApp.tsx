@@ -6,11 +6,20 @@ export const ChatApp = () => {
 
     useEffect(() => {
         PostSatalite.getAllPosts().then((posts: Post[]) => {
+            console.log('Getting All Posts')
             setPosts(posts);
+            startListener()
         })
     }, [])
 
-    return <div> Hello Data
+    const startListener = () => {
+        PostSatalite.listenForNewPosts((address, entry, heads) => {
+            console.log("New post: ", address, entry, heads)
+            setPosts(prev => [entry.payload.value, ...prev])
+        })
+    }
+
+    return <div> Hello Everyone
         {posts.map(post => <div key={post._id}>{JSON.stringify(post)}</div>)}
         <AddPost />
     </div>

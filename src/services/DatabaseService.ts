@@ -74,13 +74,15 @@ export class LocalOrbitDatabase {
         })
     }
 
-    addMessage = (message: NewPost) => {
+    listenForNewPosts = (callback: (address: string, entry: any, heads: any) => void) => this._database.events.on('write', callback)
+
+    addMessage = (message: NewPost): Promise<string> => {
         if (!this._database) {
             console.error('Database not initialized')
-            return;
+            return Promise.reject('Database not initialized')
         }
         const key = uuidv4()
-        this._database.put({
+        return this._database.put({
             ...message,
             _id: key,
         })
