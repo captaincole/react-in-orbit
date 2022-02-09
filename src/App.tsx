@@ -1,24 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { PostSatalite } from './services/DatabaseService'
+
+import { ChatApp } from './components/ChatApp'
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    PostSatalite.SendToOrbit().then(() => {
+      console.log("Sent to orbit")
+      setLoading(false)
+    })
+  })
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {loading ? <div>Loading...</div> : <ChatApp />}
     </div>
   );
 }
