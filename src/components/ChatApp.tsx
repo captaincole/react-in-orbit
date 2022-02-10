@@ -1,29 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { PostSatalite, Post } from '../services/PostService';
+import { PostSatalite, Post, RichPost } from '../services/PostService';
 import { User, UserSatalite } from '../services/UserService';
 import { AddPost } from './AddPost';
+import { PostComp } from './Post';
 import { RegisterUser } from './RegisterUser'
 export const ChatApp = () => {
-    const [posts, setPosts] = useState([] as Post[]);
-    const [user, setUser] = useState({} as User)
+    const [posts, setPosts] = useState([] as RichPost[]);
+    const [user, setUser] = useState({} as User | undefined)
+
     useEffect(() => {
         const posts = PostSatalite.getAllPosts()
-        setPosts(posts);
+        const richPosts = enrichPosts(posts)
+        setPosts(richPosts);
         startListener()
         const currentUser = UserSatalite.getCurrentUser()
         console.log('User', currentUser)
-        setUser(currentUser[0])
+        setUser(currentUser)
     }, [])
+
+    const enrichPosts = (posts: Post[]): RichPost[] => {
+        return posts.map((post): RichPost => {
+            const richPost: RichPost = { ...post, user: undefined }
+            if (post.user) {
+                console.log('Post has user', post.user)
+                const userResponse = UserSatalite.getUser(post.user)
+                richPost.user = userResponse
+            }
+            return richPost
+        })
+    }
 
     const startListener = () => {
         PostSatalite.listenForNewPosts((address, entry, heads) => {
             console.log("New post: ", address, entry, heads)
-            setPosts(prev => [entry.payload.value, ...prev])
+            setPosts(prev => [...enrichPosts([entry.payload.value]), ...prev])
         })
     }
 
     return <div> Hello {user ? user.username : 'Anonymous'}
-        {posts.map(post => <div key={post._id}>{JSON.stringify(post)}</div>)}
+        {posts.map(richPost => <PostComp post={richPost} />)}
         <AddPost />
         <RegisterUser />
     </div>

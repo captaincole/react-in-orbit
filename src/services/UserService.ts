@@ -32,12 +32,32 @@ class UserService extends LocalOrbitDatabase {
         })
     }
 
-    getCurrentUser = (): User[] => {
+    getUser = (identity: string): User | undefined => {
         if (!this._database) {
             console.error('Database not initialized')
-            return [];
+            return undefined;
         }
-        return this._database.get(this.getIdentity()._id)
+        const userResult = this._database.get(identity)
+        if (userResult.length === 0) {
+            return undefined;
+        }
+        return userResult[0]
+    }
+
+    getCurrentUser = (): User | undefined => {
+        if (!this._database) {
+            console.error('Database not initialized')
+            return undefined;
+        }
+        const userResponse = this._database.get(this.getIdentity()._id)
+        if (userResponse.length === 0) {
+            return undefined;
+        }
+        if (userResponse.length > 1) {
+            console.error('More than one user...', userResponse)
+        }
+        console.log(userResponse[0])
+        return userResponse[0]
     }
 }
 
