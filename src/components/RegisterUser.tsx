@@ -1,37 +1,30 @@
 import React from 'react'
-import { PostSatalite, NewPost } from '../services/PostService';
+import { UserSatalite } from '../services/UserService';
+import { PostSatalite } from '../services/PostService';
 
-export const AddPost = () => {
-    const [message, setMessage] = React.useState('');
+export const RegisterUser = () => {
     const [user, setUser] = React.useState('')
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMessage(e.target.value);
-    }
-
-    const handleUserChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUser(e.target.value);
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        const post: NewPost = {
-            body: message,
-            user: user,
-        }
-        PostSatalite.addMessage(post)
-        setMessage('');
-        setUser('');
-        setLoading(false);
+        UserSatalite.registerUser(user).then((id: string) => {
+            console.log("User registered: ", id)
+            setUser('');
+            setLoading(false);
+        })
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type="text" value={message} onChange={handleChange} />
-            <input type="text" value={user} onChange={handleUserChange} />
+            <label>Register Your Username</label>
+            <input type="text" value={user} onChange={handleChange} />
             <button type="submit">Send</button>
             {loading && <div>Sending...</div>}
             {error && <div>{error}</div>}
