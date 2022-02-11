@@ -1,5 +1,5 @@
 import React from 'react'
-import { RichPost } from '../services/PostService'
+import { RichPost } from '../../services/PostService'
 
 export const PostComp = (props: { post: RichPost }) => {
     const { post } = props

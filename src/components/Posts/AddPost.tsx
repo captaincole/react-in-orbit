@@ -1,6 +1,6 @@
 import React from 'react'
-import { PostSatalite, NewPost } from '../services/PostService';
-import { UserSatalite } from '../services/UserService';
+import { PostSatalite, NewPost } from '../../services/PostService';
+import { UserSatalite } from '../../services/UserService';
 
 export const AddPost = () => {
     const [message, setMessage] = React.useState('');

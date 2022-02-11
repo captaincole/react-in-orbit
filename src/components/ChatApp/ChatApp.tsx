@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { PostSatalite, Post, RichPost } from '../services/PostService';
-import { User, UserSatalite } from '../services/UserService';
-import { AddPost } from './AddPost';
-import { PostComp } from './Post';
-import { RegisterUser } from './RegisterUser'
+import { PostSatalite, Post, RichPost } from '../../services/PostService';
+import { User, UserSatalite } from '../../services/UserService';
+import { AddPost } from '../Posts/AddPost';
+import { PostComp } from '../Posts/Post';
+import { RegisterUser } from '../RegisterUser'
+import { Logo } from '../Header/Logo'
+import { Profile } from '../Header/Profile'
+import { PostList } from '../Posts/PostList'
+
 export const ChatApp = () => {
     const [posts, setPosts] = useState([] as RichPost[]);
     const [user, setUser] = useState({} as User | undefined)
@@ -38,8 +42,13 @@ export const ChatApp = () => {
     }
 
     return <div> Hello {user ? user.username : 'Anonymous'}
-        {posts.map(richPost => <PostComp post={richPost} />)}
+        <header className='header'>
+            <Logo />
+            <Profile />
+            <RegisterUser />
+        </header>
+        <PostList />
         <AddPost />
-        <RegisterUser />
-    </div>
+        {/* {posts.map(richPost => <PostComp post={richPost} />)} */}
+    </div >
 }

@@ -3,7 +3,7 @@ import './App.css';
 import { PostSatalite } from './services/PostService'
 import { UserSatalite } from './services/UserService';
 
-import { ChatApp } from './components/ChatApp'
+import { ChatApp } from './components/ChatApp/ChatApp'
 
 function App() {
   const [postsLoaded, setPostsLoaded] = useState(false);
