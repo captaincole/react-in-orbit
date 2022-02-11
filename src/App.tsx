@@ -8,6 +8,7 @@ import { ChatApp } from './components/ChatApp/ChatApp'
 function App() {
   const [postsLoaded, setPostsLoaded] = useState(false);
   const [usersLoaded, setUserLoading] = useState(false)
+
   useEffect(() => {
     PostSatalite.SendToOrbit().then(() => {
       console.log("Sent to orbit")

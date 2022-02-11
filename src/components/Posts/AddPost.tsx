@@ -7,7 +7,7 @@ export const AddPost = () => {
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.target.value);
     }
 
@@ -25,7 +25,7 @@ export const AddPost = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type="text" value={message} onChange={handleChange} />
+            <textarea value={message} onChange={handleChange} />
             <button type="submit">Send</button>
             {loading && <div>Sending...</div>}
             {error && <div>{error}</div>}
