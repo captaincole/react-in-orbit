@@ -1,0 +1,13 @@
+.add-post {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.add-post textarea {
+    width: calc(100vw - 100px);
+}
+
+.add-post button[type="submit"] {
+    width: 50px;
+
+}

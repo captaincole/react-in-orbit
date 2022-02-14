@@ -1,4 +1,5 @@
 import React from 'react'
+import './AddPost.css'
 import { PostSatalite, NewPost } from '../../services/PostService';
 import { UserSatalite } from '../../services/UserService';
 
@@ -24,7 +25,7 @@ export const AddPost = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form className='add-post' onSubmit={handleSubmit}>
             <textarea value={message} onChange={handleChange} />
             <button type="submit">Send</button>
             {loading && <div>Sending...</div>}

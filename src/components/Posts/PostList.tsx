@@ -21,7 +21,7 @@ export const PostList = () => {
      */
     const startListener = () => {
         PostSatalite.listenForNewPosts((address, entry, heads) => {
-            setPosts(prev => [...enrichPosts([entry.payload.value]), ...prev])
+            setPosts(prev => [...prev, ...enrichPosts([entry.payload.value])])
         })
     }
 
