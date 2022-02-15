@@ -1,6 +1,6 @@
 import { LocalOrbitDatabase } from './DatabaseService'
 import { v4 as uuidv4 } from 'uuid'
-import { User } from './UserService'
+import { UserEntry } from './UserService'
 
 class PostService extends LocalOrbitDatabase {
     constructor() {
@@ -12,17 +12,17 @@ class PostService extends LocalOrbitDatabase {
             console.error('Database not initialized')
             return [];
         }
-        const allMessages = this._database.all
+        const allMessages = this._database.iterator({ limit: -1 })
+            .collect()
+            .map((e: any) => e.payload.value)
         // I'll get some types in here later
         console.log(allMessages[0])
-        return allMessages.map((message: any) => {
-            return message.payload.value
-        })
+        return allMessages
     }
 
-    listenForNewPosts = (callback: (address: string, entry: any, heads: any) => void) => this._database.events.on('write', callback)
+    listenForNewPosts = (callback: (address: string, entry: any, heads: any) => void) => this._database?.events.on('write', callback)
 
-    addMessage = (message: NewPost, user_id?: string): Promise<string> => {
+    addMessage = (message: NewPost): Promise<string> => {
         if (!this._database) {
             console.error('Database not initialized')
             return Promise.reject('Database not initialized')
@@ -32,12 +32,8 @@ class PostService extends LocalOrbitDatabase {
             ...message,
             _id: key,
         }
-        if (user_id) {
-            post.user = user_id
-        }
-        return this._database.put(post)
+        return this._database.add(post)
     }
-
 }
 
 export type NewPost = Omit<Post, '_id'>
@@ -45,13 +41,15 @@ export type NewPost = Omit<Post, '_id'>
 export type Post = {
     _id: string,
     body: string,
-    user?: string, // Id of a user
+    user?: UserEntry, // Id of a user
+    user_id: string,
 }
 
 export type RichPost = {
     _id: string,
     body: string,
-    user: User | undefined,
+    user: UserEntry | undefined,
+    user_id: string,
 }
 
 // Define And Export DB Instance

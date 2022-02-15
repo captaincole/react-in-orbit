@@ -2,69 +2,82 @@ import { LocalOrbitDatabase } from './DatabaseService'
 
 class UserService extends LocalOrbitDatabase {
     constructor() {
-        super('users')
+        super('public_users')
     }
 
-    getAllUsers = async (): Promise<User[]> => {
+    getAllUsers = async (): Promise<UserEntry[]> => {
         if (!this._database) {
-            console.error('Database not initialized')
+            console.error('User Database not initialized')
             return [];
         }
-        const allMessages = this._database.all
-        // I'll get some types in here later
-        console.log(allMessages[0])
-        return allMessages.map((message: any) => {
-            return message.payload.value
+        const allUsers = this._database.iterator({
+            limit: -1,
         })
+            .collect()
+            .map((e: any) => e.payload.value)
+        return allUsers
     }
 
-    listenForNewUsers = (callback: (address: string, entry: any, heads: any) => void) => this._database.events.on('write', callback)
+    listenForNewUsers = (callback: (address: string, entry: any, heads: any) => void) => this._database?.events.on('write', callback)
 
     registerUser = (username: string): Promise<string> => {
         if (!this._database) {
             console.error('Database not initialized')
             return Promise.reject('Database not initialized')
         }
+        // Check if the user already exists
+        const userExists = this.getUserByUsername(username)
+        console.log('User Exists', userExists)
+        if (userExists) {
+            return Promise.reject('User already exists')
+        }
         // Use the identity id as the key
-        return this._database.put({
+        return this._database.add({
             username,
-            _id: this.getIdentity()._id,
+            user_id: this.getIdentity()._id,
         })
     }
 
-    getUser = (identity: string): User | undefined => {
+    getUser = (identity: string): UserEntry | undefined => {
         if (!this._database) {
             console.error('Database not initialized')
             return undefined;
         }
-        const userResult = this._database.get(identity)
-        if (userResult.length === 0) {
-            return undefined;
-        }
-        return userResult[0]
+        console.log('Get User Identity', identity)
+        return this._database.iterator({ limit: -1 })
+            .collect()
+            .map((e: any) => e.payload.value)
+            .find((e: UserEntry) => e.user_id === identity)
     }
 
-    getCurrentUser = (): User | undefined => {
+    getUserByUsername = (username: string): UserEntry | undefined => {
         if (!this._database) {
             console.error('Database not initialized')
             return undefined;
         }
-        const userResponse = this._database.get(this.getIdentity()._id)
-        if (userResponse.length === 0) {
+        return this._database.iterator({ limit: -1 })
+            .collect()
+            .map((e: any) => e.payload.value)
+            .find((e: UserEntry) => e.username === username)
+    }
+
+    getCurrentUser = (): UserEntry | undefined => {
+        if (!this._database) {
+            console.error('Database not initialized')
             return undefined;
         }
-        if (userResponse.length > 1) {
-            console.error('More than one user...', userResponse)
-        }
-        console.log(userResponse[0])
-        return userResponse[0]
+        return this._database.iterator({ limit: -1 })
+            .collect()
+            .map((e: any) => e.payload.value)
+            .find((e: UserEntry) => e.user_id === this._database?.identity?._id)
     }
 }
 
-export type NewUser = Omit<User, '_id'>
+export type NewUser = Omit<UserEntry, '_id'>
 
-export type User = {
+export type UserEntry = {
     _id: string,
+    user_id: string,
     username: string,
 }
 

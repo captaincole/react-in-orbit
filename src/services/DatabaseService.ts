@@ -4,7 +4,7 @@ const IPFS = require('ipfs')
 export class LocalOrbitDatabase {
     _ipfs_instance: any = undefined
     _orbit_db_instance: any = undefined
-    _database: any = undefined
+    _database: EventLogDB | undefined = undefined
     _database_prefix: string = 'orbit'
     _database_cid = undefined
     _database_name: string | undefined = undefined
@@ -42,25 +42,26 @@ export class LocalOrbitDatabase {
         const address = await this._orbit_db_instance.determineAddress(this._database_name, 'docstore')
         console.log('Database address', address)
         await this.CreateDatabase()
-        await this._database.load()
+        await this._database?.load()
         this.StartListeners()
         this._isBuilt = true
     }
 
     CreateDatabase = async () => {
-        this._database = await this._orbit_db_instance.docstore(this._database_name, this._database_options)
-        this._database_cid = this._database.address.toString()
+        this._database = await this._orbit_db_instance.eventlog(this._database_name, this._database_options)
+        this._database_cid = this._database?.address.toString()
         console.log('Database CID', this._database_cid, this._database)
         return this._database
     }
 
     StartListeners = async () => {
-        this._database.events.on('replicated', (address: string) => {
+        this._database?.events.on('replicated', (address: string) => {
             console.log('Database replicated', address)
         })
     }
 
     getIdentity: () => Identity = () => {
+        if (!this._database) return {} as Identity
         return this._database.identity
     }
 }
@@ -71,6 +72,20 @@ interface Identity {
     _publicKey: string,
     _signatures: any,
     _type: string,
+}
+
+interface EventLogDB {
+    identity: Identity,
+    add: (entry: any) => Promise<string>,
+    get: (hash: string) => ResultObj
+    events: any
+    address: any
+    load: any
+    iterator: (options: any) => any
+}
+
+interface ResultObj {
+    payload: { value: any }
 }
 
 // Starting Types Here for informational purposes

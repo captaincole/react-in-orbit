@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { RichPost, PostSatalite, Post } from '../../services/PostService'
-import { UserSatalite, User } from '../../services/UserService'
+import { UserSatalite, UserEntry } from '../../services/UserService'
 import { PostComp } from '../Posts/Post'
 
 export const PostList = () => {
     const [posts, setPosts] = useState([] as RichPost[])
-    const [currentUser, setCurrentUser] = useState(undefined as User | undefined)
+    const [currentUser, setCurrentUser] = useState(undefined as UserEntry | undefined)
 
     useEffect(() => {
         const posts = PostSatalite.getAllPosts()
@@ -32,10 +32,11 @@ export const PostList = () => {
     const enrichPosts = (posts: Post[]): RichPost[] => {
         return posts.map((post): RichPost => {
             const richPost: RichPost = { ...post, user: undefined }
-            if (post.user) {
-                const userResponse = UserSatalite.getUser(post.user)
+            if (post.user_id) {
+                const userResponse = UserSatalite.getUser(post.user_id)
                 richPost.user = userResponse
             }
+            console.log('Rich Post', richPost)
             return richPost
         })
     }

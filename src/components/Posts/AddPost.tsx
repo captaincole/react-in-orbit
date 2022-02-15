@@ -17,7 +17,7 @@ export const AddPost = () => {
         setLoading(true);
         const post: NewPost = {
             body: message,
-            user: UserSatalite.getCurrentUser()?._id,
+            user_id: UserSatalite.getIdentity()._id,
         }
         PostSatalite.addMessage(post)
         setMessage('');
