@@ -6,7 +6,6 @@ import { UserSatalite } from '../../services/UserService';
 export const AddPost = () => {
     const [message, setMessage] = React.useState('');
     const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.target.value);
@@ -29,7 +28,6 @@ export const AddPost = () => {
             <textarea value={message} onChange={handleChange} />
             <button type="submit">Send</button>
             {loading && <div>Sending...</div>}
-            {error && <div>{error}</div>}
         </form>
     )
 }

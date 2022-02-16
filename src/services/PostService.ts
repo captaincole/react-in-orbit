@@ -3,8 +3,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { UserEntry } from './UserService'
 
 class PostService extends LocalOrbitDatabase {
+
     constructor() {
         super('posts')
+        this._manifest_cid = 'zdpuAqQBPSWqzm1C5onTNR6rQzJRRDrumjJotTTFDEhJwSzm4'
     }
 
     getAllPosts = (): Post[] => {

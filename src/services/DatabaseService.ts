@@ -14,6 +14,7 @@ export class LocalOrbitDatabase {
             write: ['*']
         }
     }
+    _manifest_cid: string = ''
 
     constructor(name: string) {
         this._database_name = this._database_prefix + '.' + name
@@ -47,8 +48,16 @@ export class LocalOrbitDatabase {
         this._isBuilt = true
     }
 
+    listenForReplication = (callback: (address: string) => void) => this._database?.events.on('replicated', callback)
+
     CreateDatabase = async () => {
-        this._database = await this._orbit_db_instance.eventlog(this._database_name, this._database_options)
+        // Create a new database with a new manifest
+        if (this._manifest_cid === '') {
+            this._database = await this._orbit_db_instance.eventlog(this._database_name, this._database_options)
+        } else {
+            // Connect to a currently hosted database
+            this._database = await this._orbit_db_instance.eventlog(`/orbitdb/${this._manifest_cid}/${this._database_name}`, this._database_options)
+        }
         this._database_cid = this._database?.address.toString()
         console.log('Database CID', this._database_cid, this._database)
         return this._database

@@ -8,22 +8,22 @@ export const PostList = () => {
     const [currentUser, setCurrentUser] = useState(undefined as UserEntry | undefined)
 
     useEffect(() => {
+        const startListener = () => {
+            PostSatalite.listenForNewPosts((address, entry, heads) => {
+                setPosts(prev => [...prev, ...enrichPosts([entry.payload.value])])
+            })
+            PostSatalite.listenForReplication((address) => {
+                const posts = PostSatalite.getAllPosts()
+                setPosts(enrichPosts(posts).reverse())
+            })
+        }
         const posts = PostSatalite.getAllPosts()
         const richPosts = enrichPosts(posts)
         const currentUser = UserSatalite.getCurrentUser()
         setCurrentUser(currentUser)
-        setPosts(richPosts.reverse());
+        setPosts(richPosts.reverse())
         startListener()
     }, [])
-
-    /**
-     * Listen for new local writes to the database
-     */
-    const startListener = () => {
-        PostSatalite.listenForNewPosts((address, entry, heads) => {
-            setPosts(prev => [...prev, ...enrichPosts([entry.payload.value])])
-        })
-    }
 
     /** 
      * Performing a similar job to a database join,
@@ -42,6 +42,6 @@ export const PostList = () => {
     }
 
     return <div className='post-list'>
-        {posts.map((post) => <PostComp key={post._id} post={post} currentUser={currentUser?._id} />)}
+        {posts.map((post) => <PostComp key={post._id} post={post} />)}
     </div>
 }

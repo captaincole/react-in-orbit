@@ -1,8 +1,10 @@
 import { LocalOrbitDatabase } from './DatabaseService'
 
 class UserService extends LocalOrbitDatabase {
+
     constructor() {
         super('public_users')
+        this._manifest_cid = 'zdpuApQhaZLznbLVu5K3seNbc9Eq18PhKFnb6dctRQVDuMRZD'
     }
 
     getAllUsers = async (): Promise<UserEntry[]> => {
