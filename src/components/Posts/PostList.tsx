@@ -5,7 +5,6 @@ import { PostComp } from '../Posts/Post'
 
 export const PostList = () => {
     const [posts, setPosts] = useState([] as RichPost[])
-    const [currentUser, setCurrentUser] = useState(undefined as UserEntry | undefined)
 
     useEffect(() => {
         const startListener = () => {
@@ -19,8 +18,6 @@ export const PostList = () => {
         }
         const posts = PostSatalite.getAllPosts()
         const richPosts = enrichPosts(posts)
-        const currentUser = UserSatalite.getCurrentUser()
-        setCurrentUser(currentUser)
         setPosts(richPosts.reverse())
         startListener()
     }, [])
