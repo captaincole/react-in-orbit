@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { RichPost, PostSatalite, Post } from '../../services/PostService'
-import { UserSatalite, UserEntry } from '../../services/UserService'
+import { UserSatalite } from '../../services/UserService'
 import { PostComp } from '../Posts/Post'
 
 export const PostList = () => {
