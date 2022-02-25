@@ -1,6 +1,5 @@
 import React from 'react'
 import { UserSatalite } from '../services/UserService';
-import { PostSatalite } from '../services/PostService';
 
 export const RegisterUser = () => {
     const [user, setUser] = React.useState('')

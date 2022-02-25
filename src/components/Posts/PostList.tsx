@@ -9,16 +9,18 @@ export const PostList = () => {
     useEffect(() => {
         const startListener = () => {
             PostSatalite.listenForNewPosts((address, entry, heads) => {
+                console.log('New Post')
                 setPosts(prev => [...prev, ...enrichPosts([entry.payload.value])])
             })
             PostSatalite.listenForReplication((address) => {
+                console.log('Replication received')
                 const posts = PostSatalite.getAllPosts()
-                setPosts(enrichPosts(posts).reverse())
+                setPosts(enrichPosts(posts))
             })
         }
         const posts = PostSatalite.getAllPosts()
         const richPosts = enrichPosts(posts)
-        setPosts(richPosts.reverse())
+        setPosts(richPosts)
         startListener()
     }, [])
 
@@ -33,7 +35,6 @@ export const PostList = () => {
                 const userResponse = UserSatalite.getUser(post.user_id)
                 richPost.user = userResponse
             }
-            console.log('Rich Post', richPost)
             return richPost
         })
     }

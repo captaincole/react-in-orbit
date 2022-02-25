@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import './Profile.css'
 import { UserSatalite, UserEntry } from '../../services/UserService'
+import { Peers } from './Peers'
 
 export const Profile = () => {
     const [user, setUser] = useState(undefined as UserEntry | undefined)
 
     useEffect(() => {
         const currentUser = UserSatalite.getCurrentUser()
-        console.log('Current User', currentUser)
         setUser(currentUser)
     }, [])
 
@@ -23,12 +23,13 @@ export const Profile = () => {
         }
     }
 
-    return <div> {user ?
-        <div className='profile'>
-            <strong>{user.username}</strong>
-        </div> : <div className='profile'>
-            <strong>Anonymous</strong>
-            <button onClick={registerUsername}>Register Username</button>
-        </div>}
+    return <div className='profile'>
+        {user ?
+            <div className='profile'>
+                <strong>{user.username}</strong>
+            </div> : <div className='profile'>
+                <strong>Anonymous</strong>
+                <button onClick={registerUsername}>Register Username</button>
+            </div>}
     </div>
 }

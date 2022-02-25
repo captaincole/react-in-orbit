@@ -11,6 +11,12 @@ header {
     border-bottom: 1px solid grey;
 }
 
+.right {
+ display: flex;    
+ justify-content: left;   
+ align-items: left;
+}
+
 .main-content {
     width: 100%;
     max-height: calc(100vh - 170px);

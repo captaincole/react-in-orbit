@@ -10,6 +10,9 @@ export class LocalOrbitDatabase {
     _database_name: string | undefined = undefined
     _isBuilt: boolean = false
     _database_options = {
+        EXPERIMENTAL: {
+            pubsub: true,
+        },
         accessController: {
             write: ['*']
         }
@@ -50,6 +53,14 @@ export class LocalOrbitDatabase {
 
     listenForReplication = (callback: (address: string) => void) => this._database?.events.on('replicated', callback)
 
+    getNetworkPeers = async (): Promise<any[]> => {
+        return await this._ipfs_instance?.swarm.peers()
+    }
+
+    getDatabasePeers = async (): Promise<any[]> => {
+        return await this._ipfs_instance?.pubsub.peers(this._database?.address.toString())
+    }
+
     CreateDatabase = async () => {
         // Create a new database with a new manifest
         if (this._manifest_cid === '') {
@@ -69,18 +80,21 @@ export class LocalOrbitDatabase {
         })
     }
 
-    getIdentity: () => Identity = () => {
+    getIdentity: () => IdentityProps = () => {
         if (!this._database) return {} as Identity
-        return this._database.identity
+        return this._database.identity.toJSON()
     }
 }
 
-interface Identity {
-    _id: string,
-    _provider: any,
-    _publicKey: string,
-    _signatures: any,
-    _type: string,
+interface Identity extends IdentityProps {
+    toJSON: () => IdentityProps
+}
+
+interface IdentityProps {
+    id: string
+    publicKey: string
+    signatures: any
+    type: string,
 }
 
 interface EventLogDB {

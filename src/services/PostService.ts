@@ -18,7 +18,6 @@ class PostService extends LocalOrbitDatabase {
             .collect()
             .map((e: any) => e.payload.value)
         // I'll get some types in here later
-        console.log(allMessages[0])
         return allMessages
     }
 

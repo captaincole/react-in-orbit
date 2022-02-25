@@ -4,14 +4,17 @@ import { AddPost } from '../Posts/AddPost';
 import { Logo } from '../Header/Logo'
 import { Profile } from '../Header/Profile'
 import { PostList } from '../Posts/PostList'
+import { Peers } from '../Header/Peers';
 
 export const ChatApp = () => {
 
     return <div>
         <header>
             <Logo />
-            <Profile />
-            {/* <RegisterUser /> */}
+            <div className='right'>
+                <Peers />
+                <Profile />
+            </div>
         </header>
         <section className='main-content'>
             <PostList />

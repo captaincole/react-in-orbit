@@ -36,7 +36,7 @@ class UserService extends LocalOrbitDatabase {
         // Use the identity id as the key
         return this._database.add({
             username,
-            user_id: this.getIdentity()._id,
+            user_id: this.getIdentity().id,
         })
     }
 
@@ -45,7 +45,6 @@ class UserService extends LocalOrbitDatabase {
             console.error('Database not initialized')
             return undefined;
         }
-        console.log('Get User Identity', identity)
         return this._database.iterator({ limit: -1 })
             .collect()
             .map((e: any) => e.payload.value)
@@ -71,7 +70,7 @@ class UserService extends LocalOrbitDatabase {
         return this._database.iterator({ limit: -1 })
             .collect()
             .map((e: any) => e.payload.value)
-            .find((e: UserEntry) => e.user_id === this._database?.identity?._id)
+            .find((e: UserEntry) => e.user_id === this._database?.identity?.id)
     }
 }
 
